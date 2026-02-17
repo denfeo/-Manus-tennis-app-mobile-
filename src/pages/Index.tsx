@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MapPin, Clock, ChevronRight } from "lucide-react";
+import { MapPin, Clock, ChevronRight, Bell } from "lucide-react";
 import heroImg from "@/assets/hero-tennis.jpg";
 
 const locations = [
@@ -10,10 +10,10 @@ const locations = [
 ];
 
 const dates = [
-  { day: 13, weekday: "Пн" },
-  { day: 14, weekday: "Вт" },
-  { day: 17, weekday: "Пт" },
-  { day: 19, weekday: "Вс" },
+  { day: 13, weekday: "Пн", month: "Янв" },
+  { day: 14, weekday: "Вт", month: "Янв" },
+  { day: 17, weekday: "Пт", month: "Янв" },
+  { day: 19, weekday: "Вс", month: "Янв" },
 ];
 
 const timeSlots = ["12:30 - 13:30", "13:45 - 14:45", "15:00 - 16:00"];
@@ -25,36 +25,58 @@ const Index = () => {
   const [selectedTime, setSelectedTime] = useState(0);
 
   return (
-    <div className="min-h-screen bg-background max-w-md mx-auto relative">
+    <div className="min-h-screen bg-background max-w-md mx-auto relative overflow-hidden">
       {/* Hero */}
-      <div className="relative h-[340px] overflow-hidden rounded-b-3xl">
-        <img src={heroImg} alt="Tennis" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/90" />
-        <div className="absolute top-6 left-5 right-5 flex justify-between items-center">
-          <div className="w-9 h-9 rounded-full bg-card/60 backdrop-blur flex items-center justify-center">
+      <div className="relative h-[360px] overflow-hidden">
+        <img
+          src={heroImg}
+          alt="Tennis"
+          className="w-full h-full object-cover scale-105 animate-fade-in"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background" />
+
+        {/* Top bar */}
+        <div className="absolute top-6 left-5 right-5 flex justify-between items-center animate-fade-in">
+          <div className="glass w-10 h-10 rounded-full flex items-center justify-center hover-scale cursor-pointer">
             <MapPin size={16} className="text-primary" />
           </div>
-          <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground text-xs font-bold">🎾</span>
+          <div className="flex items-center gap-2">
+            <div className="glass w-10 h-10 rounded-full flex items-center justify-center hover-scale cursor-pointer relative">
+              <Bell size={16} className="text-foreground" />
+              <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-primary animate-pulse-glow" />
+            </div>
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center animate-float shadow-lg shadow-primary/30">
+              <span className="text-primary-foreground text-sm">🎾</span>
+            </div>
           </div>
         </div>
-        <div className="absolute bottom-12 left-5">
-          <p className="text-cream/70 text-xs font-semibold tracking-widest uppercase">Теннис</p>
-          <h1 className="text-cream text-4xl font-black uppercase leading-tight">Корты</h1>
-          <p className="text-primary text-sm font-semibold tracking-wider uppercase">Бронирование</p>
+
+        {/* Hero text */}
+        <div className="absolute bottom-16 left-5 right-5">
+          <p className="text-cream/60 text-xs font-semibold tracking-[0.3em] uppercase animate-fade-in stagger-1 opacity-0">
+            Теннис
+          </p>
+          <h1 className="text-cream text-5xl font-black uppercase leading-none mt-1 animate-fade-in stagger-2 opacity-0 drop-shadow-lg">
+            Корты
+          </h1>
+          <p className="text-primary text-sm font-bold tracking-[0.2em] uppercase mt-1 animate-fade-in stagger-3 opacity-0">
+            Бронирование
+          </p>
         </div>
       </div>
 
       {/* Location pills */}
-      <div className="px-4 -mt-3 flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+      <div className="px-4 -mt-5 flex gap-2 overflow-x-auto pb-3 no-scrollbar relative z-10">
         {locations.map((loc, i) => (
           <button
             key={loc.id}
             onClick={() => setSelectedLocation(i)}
-            className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+            className={`whitespace-nowrap px-4 py-2.5 rounded-full text-xs font-semibold transition-all duration-300 hover-scale opacity-0 animate-fade-in ${
+              i === 0 ? "stagger-1" : i === 1 ? "stagger-2" : "stagger-3"
+            } ${
               i === selectedLocation
-                ? "bg-primary text-primary-foreground"
-                : "bg-card text-foreground border border-border"
+                ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30"
+                : "glass text-foreground"
             }`}
           >
             {loc.name}
@@ -63,40 +85,45 @@ const Index = () => {
       </div>
 
       {/* Booking Card */}
-      <div className="mx-4 mt-4 bg-cream rounded-2xl p-5 animate-slide-up">
+      <div className="mx-4 mt-3 bg-cream rounded-3xl p-5 animate-slide-up shadow-2xl shadow-background/50">
         {/* Date selection */}
-        <p className="text-cream-foreground text-sm font-semibold mb-3">Выберите дату</p>
+        <p className="text-cream-foreground text-sm font-bold mb-3 flex items-center gap-2">
+          <span className="w-1 h-4 bg-primary rounded-full inline-block" />
+          Выберите дату
+        </p>
         <div className="flex gap-2 mb-5">
           {dates.map((d, i) => (
             <button
               key={d.day}
               onClick={() => setSelectedDate(i)}
-              className={`flex-1 flex flex-col items-center py-3 rounded-xl border-2 transition-all ${
+              className={`flex-1 flex flex-col items-center py-3 rounded-2xl border-2 transition-all duration-300 hover-scale ${
                 i === selectedDate
-                  ? "border-card bg-card/5"
-                  : "border-transparent bg-cream-foreground/5"
+                  ? "border-primary/60 bg-primary/5 shadow-md shadow-primary/10"
+                  : "border-transparent bg-cream-foreground/5 hover:bg-cream-foreground/10"
               }`}
             >
-              <span className="text-cream-foreground text-xl font-bold">{d.day}</span>
-              <span className="text-cream-foreground/60 text-xs">{d.weekday}</span>
+              <span className={`text-xl font-bold transition-colors ${
+                i === selectedDate ? "text-primary" : "text-cream-foreground"
+              }`}>{d.day}</span>
+              <span className="text-cream-foreground/50 text-[10px] font-medium">{d.weekday}</span>
             </button>
           ))}
         </div>
 
         {/* Time selection */}
-        <div className="flex items-center gap-1 mb-3">
-          <Clock size={14} className="text-cream-foreground/60" />
-          <p className="text-cream-foreground text-sm font-semibold">Выберите время</p>
-        </div>
-        <div className="flex gap-2 mb-5">
+        <p className="text-cream-foreground text-sm font-bold mb-3 flex items-center gap-2">
+          <Clock size={14} className="text-primary" />
+          Выберите время
+        </p>
+        <div className="flex gap-2 mb-6">
           {timeSlots.map((slot, i) => (
             <button
               key={slot}
               onClick={() => setSelectedTime(i)}
-              className={`flex-1 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              className={`flex-1 py-3 rounded-2xl text-xs font-semibold transition-all duration-300 hover-scale ${
                 i === selectedTime
-                  ? "bg-card text-foreground"
-                  : "bg-cream-foreground/5 text-cream-foreground/80"
+                  ? "bg-card text-foreground shadow-lg"
+                  : "bg-cream-foreground/5 text-cream-foreground/70 hover:bg-cream-foreground/10"
               }`}
             >
               {slot}
@@ -104,27 +131,30 @@ const Index = () => {
           ))}
         </div>
 
+        {/* Divider */}
+        <div className="h-px bg-cream-foreground/10 mb-4" />
+
         {/* Price & Book */}
         <div className="flex items-end justify-between">
           <div>
-            <p className="text-cream-foreground/60 text-xs">Стоимость</p>
-            <p className="text-cream-foreground text-2xl font-bold">₽3 200</p>
+            <p className="text-cream-foreground/50 text-[10px] uppercase tracking-wider font-medium">Стоимость</p>
+            <p className="text-cream-foreground text-3xl font-black">₽3 200</p>
           </div>
           <button
             onClick={() => navigate("/courts")}
-            className="bg-card text-cream px-6 py-3 rounded-xl font-semibold text-sm flex items-center gap-1 hover:opacity-90 transition-opacity"
+            className="bg-card text-cream px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-1.5 hover-lift shadow-xl shadow-card/50 group"
           >
             Забронировать
-            <ChevronRight size={16} />
+            <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />
           </button>
         </div>
 
-        <p className="text-cream-foreground/40 text-[10px] mt-3 leading-tight">
+        <p className="text-cream-foreground/30 text-[10px] mt-4 leading-relaxed">
           Подтверждая бронирование, вы оплачиваете залог 50%. Остаток оплачивается на месте.
         </p>
       </div>
 
-      <div className="h-24" />
+      <div className="h-28" />
     </div>
   );
 };
